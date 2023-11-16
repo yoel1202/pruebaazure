@@ -1,0 +1,60 @@
+<TrustFrameworkPolicy
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns="http://schemas.microsoft.com/online/cpim/schemas/2013/06"
+  PolicySchemaVersion="0.3.0.0"
+  TenantId="d2f7716adcd64c0cb6bd8e33e2276851"
+  PolicyId="B2C_1A_signup_signin"
+>
+  <BasePolicy>
+    <!-- Definición de las etapas del proceso -->
+    <OrchestrationSteps>
+      <!-- Otras etapas aquí -->
+
+      <!-- Etapa para llamar a la Azure Function -->
+      <OrchestrationStep Order="1" Type="ClaimsExchange">
+        <ClaimsExchanges>
+          <ClaimsExchange Id="CallAzureFunction" TechnicalProfileReferenceId="Call-Azure-Function" />
+        </ClaimsExchanges>
+      </OrchestrationStep>
+    </OrchestrationSteps>
+  </BasePolicy>
+
+  <!-- Definición del perfil técnico para llamar a la Azure Function -->
+  <BuildingBlocks>
+    <ClaimsExchanges>
+      <ClaimsExchange Id="Call-Azure-Function" TechnicalProfileReferenceId="REST-API-Azure-Function" />
+    </ClaimsExchanges>
+  </BuildingBlocks>
+
+  <!-- Configuración del perfil técnico para llamar a la Azure Function mediante REST API -->
+  <ClaimsProviders>
+    <ClaimsProvider>
+      <DisplayName>REST API Azure Function</DisplayName>
+      <TechnicalProfiles>
+        <TechnicalProfile Id="REST-API-Azure-Function">
+          <DisplayName>Call Azure Function</DisplayName>
+          <Protocol Name="Propietario" />
+          <Metadata>
+            <Item Key="ServiceUrl">https://testb2citcos.azurewebsites.net/api/function</Item>
+            <Item Key="AuthenticationType">Basic</Item>
+            <Item Key="SendClaimsIn">Form</Item>
+          </Metadata>
+          <CryptographicKeys>
+            <!-- Clave para autenticación básica -->
+            <Key Id="BasicAuthenticationUsername" StorageReferenceId="_master" />
+            <Key Id="BasicAuthenticationPassword" StorageReferenceId="rxV48yibb-y0PKpxQGP7yBvQFINFj4ala_vSByHaIu19AzFuEI8-yQ==" />
+          </CryptographicKeys>
+          <InputClaims />
+          <InputParameters>
+            <!-- Parámetros necesarios para la Azure Function -->
+            <InputParameter Id="username" DataType="string" Source="userInput" />
+            <InputParameter Id="password" DataType="string" Source="userInput" />
+          </InputParameters>
+          <OutputClaims />
+          <UseTechnicalProfileForSessionManagement ReferenceId="SM-Noop" />
+        </TechnicalProfile>
+      </TechnicalProfiles>
+    </ClaimsProvider>
+  </ClaimsProviders>
+</TrustFrameworkPolicy>
